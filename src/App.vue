@@ -68,7 +68,7 @@
   });
 
   function createEntry() {
-    if (Object.values(calorieEntryInput).includes(null)) {
+    if (!calorieEntryInput.amount || !calorieEntryInput.title || !calorieEntryInput.happenedAt) {
       return;
     }
 
