@@ -54,7 +54,7 @@
    * https://github.com/dexie/Dexie.js/issues/1461
    */
   const calorieEntries: Ref<ICalorieEntry[]> = useObservable(
-    liveQuery(() => db.calorieEntries.toArray()) as any
+    liveQuery(() => db.calorieEntries.orderBy('happenedAt').toArray()) as any
   );
 
   /**
