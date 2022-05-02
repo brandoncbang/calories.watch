@@ -68,11 +68,11 @@
   const calorieEntryInput = reactive({
     amount: null,
     title: null,
-    happenedAt: toDatetimeLocalValue(new Date()),
+    happenedAt: null,
   });
 
   async function createEntry() {
-    if (!calorieEntryInput.amount || !calorieEntryInput.title || !calorieEntryInput.happenedAt) {
+    if (!calorieEntryInput.amount || !calorieEntryInput.title) {
       return;
     }
 
@@ -80,12 +80,12 @@
       const id = await db.calorieEntries.add({
         amount: calorieEntryInput.amount,
         title: calorieEntryInput.title,
-        happenedAt: new Date(calorieEntryInput.happenedAt)
+        happenedAt: new Date(calorieEntryInput.happenedAt ?? toDatetimeLocalValue(new Date()))
       });
 
       calorieEntryInput.amount = null;
       calorieEntryInput.title = null;
-      calorieEntryInput.happenedAt = toDatetimeLocalValue(new Date());
+      calorieEntryInput.happenedAt = null;
     } catch (error) {
       console.log(error);
     }
