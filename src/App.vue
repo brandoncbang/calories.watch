@@ -24,7 +24,7 @@
   </table>
 
   <h2>Add an entry</h2>
-  <form @submit.prevent="createEntry">
+  <form @submit.prevent="createCalorieEntry">
     <p>
       <label>
         <span>Amount</span>
@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref, Ref, computed } from 'vue';
+  import { reactive, ref, Ref, computed, watchEffect } from 'vue';
   import { liveQuery } from 'dexie';
   import { useObservable } from '@vueuse/rxjs';
   import { db, ICalorieEntry } from './db';
@@ -61,13 +61,7 @@
     return entriesDate.value >= getDateStart(new Date()) && entriesDate.value <= getDateEnd(new Date());
   });
 
-  /**
-   * Incompatible types with RXJS 7 for now. Seems to be an issue with the vueuse package.
-   * https://github.com/dexie/Dexie.js/issues/1461
-   */
-  const calorieEntries: Ref<ICalorieEntry[]> = useObservable(
-    liveQuery(() => db.calorieEntries.orderBy('happenedAt').toArray()) as any
-  );
+  const calorieEntries: Ref<ICalorieEntry[]> = ref([]);
 
   /**
    * Turn a Date object into a string value used by 'datetime-local' input elements.
@@ -103,17 +97,29 @@
     entriesDate.value = new Date(entriesDate.value);
   }
 
-  async function createEntry() {
+  async function getCalorieEntries() {
+    calorieEntries.value = await db.calorieEntries
+      .where('happenedAt')
+      .between(
+        getDateStart(new Date(entriesDate.value)),
+        getDateEnd(new Date(entriesDate.value))
+      )
+      .sortBy('happenedAt');
+  }
+
+  async function createCalorieEntry() {
     if (!calorieEntryInput.amount || !calorieEntryInput.title) {
       return;
     }
 
     try {
-      const id = await db.calorieEntries.add({
+      db.calorieEntries.add({
         amount: calorieEntryInput.amount,
         title: calorieEntryInput.title,
         happenedAt: new Date(calorieEntryInput.happenedAt ?? toDatetimeLocalValue(new Date()))
       });
+
+      getCalorieEntries();
 
       calorieEntryInput.amount = null;
       calorieEntryInput.title = null;
@@ -122,4 +128,8 @@
       console.log(error);
     }
   }
+
+  watchEffect(() => {
+    getCalorieEntries();
+  });
 </script>
