@@ -1,4 +1,10 @@
 <template>
+  <h1>
+    <button @click="loadPreviousDay">&larr;</button>
+    &nbsp;<span>{{ entriesDateIsToday ? 'Today' : entriesDate.toLocaleDateString() }}</span>&nbsp;
+    <button @click="loadNextDay">&rarr;</button>
+  </h1>
+
   <h2>Entries</h2>
   <table>
     <thead>
@@ -44,10 +50,16 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, Ref, ref } from 'vue';
+  import { reactive, ref, Ref, computed } from 'vue';
   import { liveQuery } from 'dexie';
   import { useObservable } from '@vueuse/rxjs';
   import { db, ICalorieEntry } from './db';
+
+  const entriesDate = ref(new Date());
+
+  const entriesDateIsToday = computed(() => {
+    return entriesDate.value >= getDateStart(new Date()) && entriesDate.value <= getDateEnd(new Date());
+  });
 
   /**
    * Incompatible types with RXJS 7 for now. Seems to be an issue with the vueuse package.
@@ -65,11 +77,31 @@
     return datetime.toISOString().slice(0, 16);
   }
 
+  function getDateStart(datetime: Date): Date {
+    datetime.setHours(0, 0, 0, 0);
+    return datetime;
+  }
+
+  function getDateEnd(datetime: Date): Date {
+    datetime.setHours(23, 59, 59, 999);
+    return datetime;
+  }
+
   const calorieEntryInput = reactive({
     amount: null,
     title: null,
     happenedAt: null,
   });
+
+  function loadPreviousDay() {
+    entriesDate.value.setDate(entriesDate.value.getDate() - 1);
+    entriesDate.value = new Date(entriesDate.value);
+  }
+
+  function loadNextDay() {
+    entriesDate.value.setDate(entriesDate.value.getDate() + 1);
+    entriesDate.value = new Date(entriesDate.value);
+  }
 
   async function createEntry() {
     if (!calorieEntryInput.amount || !calorieEntryInput.title) {
