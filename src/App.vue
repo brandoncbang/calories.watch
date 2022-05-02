@@ -19,6 +19,7 @@
         <td>{{ entry.amount }}</td>
         <td>{{ entry.title }}</td>
         <td>{{ entry.happenedAt.toLocaleString([], { hour: 'numeric', minute: '2-digit' }) }}</td>
+        <td><button @click="deleteCalorieEntry(entry.id!)">Delete</button></td>
       </tr>
     </tbody>
   </table>
@@ -124,6 +125,18 @@
       calorieEntryInput.amount = null;
       calorieEntryInput.title = null;
       calorieEntryInput.happenedAt = null;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function deleteCalorieEntry(id: number) {
+    if (!window.confirm('Are you sure you want to delete this entry?')) return;
+
+    try {
+      await db.calorieEntries.delete(id);
+
+      getCalorieEntries();
     } catch (error) {
       console.log(error);
     }
