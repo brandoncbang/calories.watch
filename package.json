@@ -8,14 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vueuse/rxjs": "^8.3.1",
     "dexie": "^3.2.2",
-    "luxon": "^2.3.2",
-    "rxjs": "^7.5.5",
     "vue": "^3.2.25"
   },
   "devDependencies": {
-    "@types/luxon": "^2.3.1",
     "@vitejs/plugin-vue": "^2.3.1",
     "autoprefixer": "^10.4.5",
     "postcss": "^8.4.12",
