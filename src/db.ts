@@ -6,7 +6,7 @@ export interface ICalorieEntry {
   id?: number;
   amount: number;
   title: string;
-  happenedAt: DateTime;
+  happenedAt: Date;
 }
 
 export class DataBase extends Dexie {

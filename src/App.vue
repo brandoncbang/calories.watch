@@ -12,7 +12,7 @@
       <tr>
         <td>{{ entry.amount }}</td>
         <td>{{ entry.title }}</td>
-        <td>{{ entry.happenedAt.toLocaleString(DateTime.TIME_SIMPLE) }}</td>
+        <td>{{ entry.happenedAt.toLocaleString([], { hour: 'numeric', minute: '2-digit' }) }}</td>
       </tr>
     </tbody>
   </table>
@@ -47,7 +47,6 @@
   import { reactive, Ref, ref } from 'vue';
   import { liveQuery } from 'dexie';
   import { useObservable } from '@vueuse/rxjs';
-  import { DateTime } from 'luxon';
   import { db, ICalorieEntry } from './db';
 
   /**
@@ -58,17 +57,15 @@
     liveQuery(() => db.calorieEntries.toArray()) as any
   );
 
-    constructor(amount: number, title: string, happenedAt: DateTime) {
-      this.amount = amount;
-      this.title = title;
-      this.happenedAt = happenedAt;
-    }
+  function toDatetimeLocalValue(datetime: Date): string {
+    datetime.setMinutes(datetime.getMinutes() - datetime.getTimezoneOffset());
+    return datetime.toISOString().slice(0, 16);
   }
 
   const calorieEntryInput = reactive({
     amount: null,
     title: null,
-    happenedAt: DateTime.now().toISO(),
+    happenedAt: toDatetimeLocalValue(new Date()),
   });
 
   async function createEntry() {
@@ -83,8 +80,8 @@
         happenedAt: new Date(calorieEntryInput.happenedAt)
       });
 
-    calorieEntryInput.amount = null;
-    calorieEntryInput.title = null;
+      calorieEntryInput.amount = null;
+      calorieEntryInput.title = null;
       calorieEntryInput.happenedAt = toDatetimeLocalValue(new Date());
     } catch (error) {
       console.log(error);
