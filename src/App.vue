@@ -57,6 +57,9 @@
     liveQuery(() => db.calorieEntries.toArray()) as any
   );
 
+  /**
+   * Turn a Date object into a string value used by 'datetime-local' input elements.
+   */
   function toDatetimeLocalValue(datetime: Date): string {
     datetime.setMinutes(datetime.getMinutes() - datetime.getTimezoneOffset());
     return datetime.toISOString().slice(0, 16);
