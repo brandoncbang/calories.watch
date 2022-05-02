@@ -45,12 +45,18 @@
 
 <script setup lang="ts">
   import { reactive, Ref, ref } from 'vue';
+  import { liveQuery } from 'dexie';
+  import { useObservable } from '@vueuse/rxjs';
   import { DateTime } from 'luxon';
+  import { db, ICalorieEntry } from './db';
 
-  class CalorieEntry {
-    amount: number;
-    title: string;
-    happenedAt: DateTime;
+  /**
+   * Incompatible types with RXJS 7 for now. Seems to be an issue with the vueuse package.
+   * https://github.com/dexie/Dexie.js/issues/1461
+   */
+  const calorieEntries: Ref<ICalorieEntry[]> = useObservable(
+    liveQuery(() => db.calorieEntries.toArray()) as any
+  );
 
     constructor(amount: number, title: string, happenedAt: DateTime) {
       this.amount = amount;
@@ -59,29 +65,29 @@
     }
   }
 
-  const calorieEntries: Ref<CalorieEntry[]> = ref([]);
-
   const calorieEntryInput = reactive({
     amount: null,
     title: null,
     happenedAt: DateTime.now().toISO(),
   });
 
-  function createEntry() {
+  async function createEntry() {
     if (!calorieEntryInput.amount || !calorieEntryInput.title || !calorieEntryInput.happenedAt) {
       return;
     }
 
-    calorieEntries.value.push(
-      new CalorieEntry(
-        calorieEntryInput.amount,
-        calorieEntryInput.title,
-        DateTime.fromISO(calorieEntryInput.happenedAt)
-      )
-    )
+    try {
+      const id = await db.calorieEntries.add({
+        amount: calorieEntryInput.amount,
+        title: calorieEntryInput.title,
+        happenedAt: new Date(calorieEntryInput.happenedAt)
+      });
 
     calorieEntryInput.amount = null;
     calorieEntryInput.title = null;
-    calorieEntryInput.happenedAt = DateTime.now().toISO();
+      calorieEntryInput.happenedAt = toDatetimeLocalValue(new Date());
+    } catch (error) {
+      console.log(error);
+    }
   }
 </script>
