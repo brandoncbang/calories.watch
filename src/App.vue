@@ -24,6 +24,9 @@
     </tbody>
   </table>
 
+  <h2>Total</h2>
+  <p>{{ calorieEntries.reduce((sum, entry) => sum + entry.amount, 0) }}</p>
+
   <h2>Add an entry</h2>
   <form @submit.prevent="createCalorieEntry">
     <p>
