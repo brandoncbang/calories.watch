@@ -55,8 +55,6 @@
 
 <script setup lang="ts">
   import { reactive, ref, Ref, computed, watchEffect } from 'vue';
-  import { liveQuery } from 'dexie';
-  import { useObservable } from '@vueuse/rxjs';
   import { db, ICalorieEntry } from './db';
 
   const entriesDate = ref(new Date());
