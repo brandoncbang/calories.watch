@@ -6,7 +6,7 @@
   </h1>
 
   <h2>Entries</h2>
-  <table>
+  <table v-if="calorieEntries.length">
     <thead>
       <tr>
         <th>Amount</th>
@@ -23,6 +23,7 @@
       </tr>
     </tbody>
   </table>
+  <p v-else>No entries for this date!</p>
 
   <h2>Total</h2>
   <p :style="{ color: settings.dailyLimit && totalCalories > settings.dailyLimit ? 'red' : 'inherit' }">
