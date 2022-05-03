@@ -1,9 +1,12 @@
 <template>
   <h1>
     <button @click="loadPreviousDay">&larr;</button>
-    &nbsp;<span>{{ entriesDateIsToday ? 'Today' : entriesDate.toLocaleDateString() }}</span>&nbsp;
+    &nbsp;<span>{{ entriesDate.toLocaleDateString() }}</span>&nbsp;
     <button @click="loadNextDay">&rarr;</button>
   </h1>
+  <p>
+    <button @click="loadToday">Jump to today</button>
+  </p>
 
   <h2>Entries</h2>
   <table v-if="calorieEntries.length">
@@ -73,7 +76,7 @@
 
   const entriesDate = ref(new Date());
 
-  const entriesDateIsToday = computed(() => {
+  const todayIsLoaded = computed(() => {
     return entriesDate.value >= getDateStart(new Date()) && entriesDate.value <= getDateEnd(new Date());
   });
 
@@ -119,6 +122,10 @@
   function loadNextDay() {
     entriesDate.value.setDate(entriesDate.value.getDate() + 1);
     entriesDate.value = new Date(entriesDate.value);
+  }
+
+  function loadToday() {
+    entriesDate.value = new Date();
   }
 
   async function getCalorieEntries() {
