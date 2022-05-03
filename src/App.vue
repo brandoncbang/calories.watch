@@ -25,7 +25,10 @@
   </table>
 
   <h2>Total</h2>
-  <p>{{ calorieEntries.reduce((sum, entry) => sum + entry.amount, 0) }}</p>
+  <p :style="{ color: settings.dailyLimit && totalCalories > settings.dailyLimit ? 'red' : 'inherit' }">
+    <span>{{ totalCalories }}</span>
+    <span v-if="settings.dailyLimit"> / {{ settings.dailyLimit }}</span>
+  </p>
 
   <h2>Add an entry</h2>
   <form @submit.prevent="createCalorieEntry">
@@ -51,10 +54,20 @@
       <button type="submit">Save</button>
     </p>
   </form>
+
+  <h2>Settings</h2>
+  <form @submit.prevent="saveSettings">
+    <p>
+      <label>
+        <span>Daily limit</span>
+        <input v-model="settings.dailyLimit" type="number" />
+      </label>
+    </p>
+  </form>
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref, Ref, computed, watchEffect } from 'vue';
+  import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
 
   const entriesDate = ref(new Date());
@@ -64,6 +77,14 @@
   });
 
   const calorieEntries: Ref<ICalorieEntry[]> = ref([]);
+
+  const totalCalories = computed(() => {
+    return calorieEntries.value.reduce((sum, entry) => sum + entry.amount, 0);
+  });
+
+  const totalIsOverLimit = computed(() => {
+    return settings.dailyLimit && totalCalories > settings.dailyLimit;
+  });
 
   /**
    * Turn a Date object into a string value used by 'datetime-local' input elements.
@@ -145,5 +166,25 @@
 
   watchEffect(() => {
     getCalorieEntries();
+  });
+
+  const settings = reactive(loadSettings());
+
+  function saveSettings() {
+    window.localStorage.settings = JSON.stringify(settings);
+  }
+
+  function loadSettings() {
+    if (!window.localStorage.settings) {
+      return {
+        dailyLimit: null,
+      }
+    }
+
+    return JSON.parse(window.localStorage.settings)
+  }
+
+  watch(settings, () => {
+    saveSettings();
   });
 </script>
