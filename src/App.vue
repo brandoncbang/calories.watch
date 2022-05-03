@@ -35,13 +35,13 @@
     <p>
       <label>
         <span>Amount</span>
-        <input v-model="calorieEntryInput.amount" type="number" />
+        <input v-model.number="calorieEntryInput.amount" type="number" />
       </label>
     </p>
     <p>
       <label>
         <span>Title</span>
-        <input v-model="calorieEntryInput.title" type="text" />
+        <input v-model.trim="calorieEntryInput.title" type="text" />
       </label>
     </p>
     <p>
@@ -60,7 +60,7 @@
     <p>
       <label>
         <span>Daily limit</span>
-        <input v-model="settings.dailyLimit" type="number" />
+        <input v-model.lazy.number="settings.dailyLimit" type="number" />
       </label>
     </p>
   </form>
