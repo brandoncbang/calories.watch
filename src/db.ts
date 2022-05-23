@@ -1,5 +1,4 @@
 import { Dexie, Table } from 'dexie';
-import { DateTime } from 'luxon';
 
 // TODO: Create real class
 export interface ICalorieEntry {
