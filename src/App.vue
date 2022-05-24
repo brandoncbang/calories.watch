@@ -1,10 +1,14 @@
 <template>
   <div class="flex justify-between text-3xl">
-    <button @click="loadPreviousDay">&larr;</button>
+    <button @click="loadPreviousDay" aria-label="previous day" title="Previous Day">
+      <ArrowLeftIcon class="w-5 h-5" />
+    </button>
 
     <DatePicker v-model="entriesDate" />
     
-    <button @click="loadNextDay">&rarr;</button>
+    <button @click="loadNextDay" aria-label="next day" title="Next Day">
+      <ArrowRightIcon class="w-5 h-5" />
+    </button>
   </div>
 
   <h2 class="mt-12 text-2xl">Entries</h2>
@@ -111,8 +115,7 @@
   import DatePicker from './components/forms/DatePicker.vue';
   import Field from './components/forms/Field.vue';
   import Button from './components/forms/Button.vue';
-  import SmallButton from './components/forms/SmallButton.vue';
-  import { PencilAltIcon, XCircleIcon } from '@heroicons/vue/solid';
+  import { ArrowLeftIcon, ArrowRightIcon, PencilAltIcon, XCircleIcon } from '@heroicons/vue/solid';
 
   import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
