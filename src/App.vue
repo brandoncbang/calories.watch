@@ -13,17 +13,7 @@
 
   <h2 class="mt-12 text-2xl">Entries</h2>
   <CalorieEntriesList @delete-entry="deleteCalorieEntry" :calorie-entries="calorieEntries" />
-
-  <div
-      :class="{ 'text-red-600': settings.dailyLimit && totalCalories > settings.dailyLimit }"
-      class="mt-6"
-  >
-    <h2 class="text-2xl">Total</h2>
-    <p class="mt-2 text-3xl">
-      <span>{{ totalCalories }}</span>
-      <span v-if="settings.dailyLimit"> / {{ settings.dailyLimit }}</span>
-    </p>
-  </div>
+  <CalorieTotal :calorie-entries="calorieEntries" :limit="settings.dailyLimit || null" />
 
   <form @submit.prevent="createCalorieEntry" class="mt-12">
     <h2 class="text-2xl">Add an entry</h2>
@@ -73,6 +63,7 @@
 <script setup lang="ts">
   import DatePicker from './components/forms/DatePicker.vue';
   import CalorieEntriesList from './components/CalorieEntriesList.vue';
+  import CalorieTotal from './components/CalorieTotal.vue';
   import Field from './components/forms/Field.vue';
   import Button from './components/forms/Button.vue';
   import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/solid';
@@ -83,19 +74,7 @@
 
   const entriesDate = ref(getDateStart(new Date()));
 
-  const todayIsLoaded = computed(() => {
-    return entriesDate.value >= getDateStart(new Date()) && entriesDate.value <= getDateEnd(new Date());
-  });
-
   const calorieEntries: Ref<ICalorieEntry[]> = ref([]);
-
-  const totalCalories = computed(() => {
-    return calorieEntries.value.reduce((sum, entry) => sum + entry.amount, 0);
-  });
-
-  const totalIsOverLimit = computed(() => {
-    return settings.dailyLimit && totalCalories > settings.dailyLimit;
-  });
 
   const calorieEntryInput = reactive({
     amount: null,
@@ -111,10 +90,6 @@
   function loadNextDay() {
     entriesDate.value.setDate(entriesDate.value.getDate() + 1);
     entriesDate.value = new Date(entriesDate.value);
-  }
-
-  function loadToday() {
-    entriesDate.value = new Date();
   }
 
   async function getCalorieEntries() {
