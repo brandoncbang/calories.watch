@@ -1,19 +1,11 @@
 <template>
-  <div class="flex justify-center space-x-4 text-3xl">
+  <div class="flex justify-between text-3xl">
     <button @click="loadPreviousDay">&larr;</button>
 
-    <h1 class="text-center">
-      {{ entriesDate.toLocaleDateString() }}
-    </h1>
+    <DatePicker v-model="entriesDate" />
     
     <button @click="loadNextDay">&rarr;</button>
   </div>
-
-  <p class="mt-2 text-base text-center">
-    <SmallButton @click="loadToday">
-      Jump to today
-    </SmallButton>
-  </p>
 
   <h2 class="mt-12 text-2xl">Entries</h2>
   <div v-if="calorieEntries.length" class="mt-2 overflow-y-auto h-96">
@@ -116,6 +108,7 @@
 </template>
 
 <script setup lang="ts">
+  import DatePicker from './components/forms/DatePicker.vue';
   import Field from './components/forms/Field.vue';
   import Button from './components/forms/Button.vue';
   import SmallButton from './components/forms/SmallButton.vue';
@@ -123,8 +116,9 @@
 
   import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
+  import { toDatetimeLocalValue, getDateStart, getDateEnd } from './lib/date';
 
-  const entriesDate = ref(new Date());
+  const entriesDate = ref(getDateStart(new Date()));
 
   const todayIsLoaded = computed(() => {
     return entriesDate.value >= getDateStart(new Date()) && entriesDate.value <= getDateEnd(new Date());
@@ -139,24 +133,6 @@
   const totalIsOverLimit = computed(() => {
     return settings.dailyLimit && totalCalories > settings.dailyLimit;
   });
-
-  /**
-   * Turn a Date object into a string value used by 'datetime-local' input elements.
-   */
-  function toDatetimeLocalValue(datetime: Date): string {
-    datetime.setMinutes(datetime.getMinutes() - datetime.getTimezoneOffset());
-    return datetime.toISOString().slice(0, 16);
-  }
-
-  function getDateStart(datetime: Date): Date {
-    datetime.setHours(0, 0, 0, 0);
-    return datetime;
-  }
-
-  function getDateEnd(datetime: Date): Date {
-    datetime.setHours(23, 59, 59, 999);
-    return datetime;
-  }
 
   const calorieEntryInput = reactive({
     amount: null,
