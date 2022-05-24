@@ -49,7 +49,7 @@
   import { ICalorieEntry } from '../db';
 
   interface Props {
-    calorieEntries: ICalorieEntry[]
+    calorieEntries: ICalorieEntry[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
