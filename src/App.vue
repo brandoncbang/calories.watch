@@ -12,48 +12,7 @@
   </div>
 
   <h2 class="mt-12 text-2xl">Entries</h2>
-  <div v-if="calorieEntries.length" class="mt-2 overflow-y-auto h-96">
-    <table class="w-full text-base">
-      <thead class="sticky top-0 pb-2 text-right bg-white after:absolute after:-bottom-px after:left-0 after:block after:w-full after:h-[2px] after:bg-slate-800">
-        <tr>
-          <th class="p-2 pl-0 font-semibold">Amount</th>
-          <th class="p-2 font-semibold">Title</th>
-          <th class="p-2 font-semibold">Time</th>
-          <th class="p-2 pr-0 font-semibold"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-            v-for="entry in calorieEntries"
-            class="text-right border-t border-slate-800 first:border-t-0"
-        >
-          <td class="py-3 pr-2">
-            {{ entry.amount }}
-          </td>
-          <td class="w-full px-2 py-3 break-words max-w-0">
-            {{ entry.title }}
-          </td>
-          <td class="px-2 py-3 whitespace-nowrap">
-            {{ entry.happenedAt.toLocaleString([], { hour: 'numeric', minute: '2-digit' }) }}
-          </td>
-          <td class="pl-2 py-1.5">
-            <div class="flex text-slate-800">
-              <button @click="editCalorieEntry(entry.id!)">
-                <PencilAltIcon class="w-5 h-5" />
-              </button>
-              
-              <button @click="deleteCalorieEntry(entry.id!)" class="ml-1">
-                <XCircleIcon class="w-5 h-5" />
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div v-else class="flex items-center justify-center px-4 py-2 mt-2 h-96">
-    <p>No entries for this date!</p>
-  </div>
+  <CalorieEntriesList @delete-entry="deleteCalorieEntry" :calorie-entries="calorieEntries" />
 
   <div
       :class="{ 'text-red-600': settings.dailyLimit && totalCalories > settings.dailyLimit }"
@@ -113,9 +72,10 @@
 
 <script setup lang="ts">
   import DatePicker from './components/forms/DatePicker.vue';
+  import CalorieEntriesList from './components/CalorieEntriesList.vue';
   import Field from './components/forms/Field.vue';
   import Button from './components/forms/Button.vue';
-  import { ArrowLeftIcon, ArrowRightIcon, PencilAltIcon, XCircleIcon } from '@heroicons/vue/solid';
+  import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/solid';
 
   import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
