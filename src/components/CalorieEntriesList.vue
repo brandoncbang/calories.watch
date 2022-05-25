@@ -30,7 +30,7 @@
               </button>
               
               <button @click="$emit('deleteEntry', entry.id!)" class="ml-1">
-                <XCircleIcon class="w-5 h-5" />
+                <TrashIcon class="w-5 h-5" />
               </button>
             </div>
           </td>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-  import { PencilAltIcon, XCircleIcon } from '@heroicons/vue/solid';
+  import { PencilAltIcon, TrashIcon } from '@heroicons/vue/solid';
 
   import { ICalorieEntry } from '../db';
 
