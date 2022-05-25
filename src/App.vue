@@ -13,7 +13,7 @@
         </button>
       </div>
 
-      <h2 class="mt-12 text-2xl">Entries</h2>
+      <h2 class="mt-6 text-2xl">Entries</h2>
       <CalorieEntriesList
           @edit-entry="editCalorieEntry"
           @delete-entry="deleteCalorieEntry"
@@ -31,7 +31,7 @@
     </template>
 
     <template v-if="screen === 'form'">
-      <h2 class="text-2xl">Add an entry</h2>
+      <h2 class="text-2xl">Add a calorie entry</h2>
       <CalorieEntryForm @saved="createCalorieEntry" @canceled="screen = null" />
     </template>
 
@@ -49,7 +49,7 @@
     </template>
 
     <template v-if="screen === 'about'">
-      <h1 class="text-3xl">About</h1>
+      <h2 class="text-2xl">About</h2>
       <p class="mt-2">Made by Brandon Bang</p>
     </template>
 
