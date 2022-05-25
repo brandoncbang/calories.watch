@@ -53,8 +53,8 @@
       <p class="mt-2">Made by Brandon Bang</p>
     </template>
 
-    <div class="fixed bottom-0 left-0 right-0 flex justify-between py-1 mt-12 bg-white border-t-2 px-14 border-slate-800">
-      <button @click="screen = null" class="px-3 py-4">
+    <div class="fixed bottom-0 left-0 right-0 flex p-1 mt-12 space-x-1 bg-white border-t-2 justify-evenly border-slate-800">
+      <button @click="screen = null" class="flex-1 py-4">
         <span
             :class="{ 'border-b-2': screen === null }"
             class="border-slate-800"
@@ -62,7 +62,7 @@
           Entries
         </span>
       </button>
-      <button @click="screen = 'settings'" class="px-3 py-4">
+      <button @click="screen = 'settings'" class="flex-1 py-4">
         <span
             :class="{ 'border-b-2': screen === 'settings' }"
             class="border-slate-800"
@@ -70,7 +70,7 @@
           Settings
         </span>
       </button>
-      <button @click="screen = 'about'" class="px-3 py-4">
+      <button @click="screen = 'about'" class="flex-1 py-4">
         <span
             :class="{ 'border-b-2': screen === 'about' }"
             class="border-slate-800"
