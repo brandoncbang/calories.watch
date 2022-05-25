@@ -12,41 +12,21 @@
   </div>
 
   <h2 class="mt-12 text-2xl">Entries</h2>
-  <CalorieEntriesList @delete-entry="deleteCalorieEntry" :calorie-entries="calorieEntries" />
-  <CalorieTotal :calorie-entries="calorieEntries" :limit="settings.dailyLimit || null" />
+  <CalorieEntriesList
+      @edit-entry="editCalorieEntry"
+      @delete-entry="deleteCalorieEntry"
+      :calorie-entries="calorieEntries"
+  />
+  <CalorieTotal
+      :calorie-entries="calorieEntries"
+      :limit="settings.dailyLimit || null"
+  />
 
-  <form @submit.prevent="createCalorieEntry" class="mt-12">
-    <h2 class="text-2xl">Add an entry</h2>
-    <p class="mt-2">
-      <Field 
-          v-model.number="calorieEntryInput.amount"
-          type="number"
-          label="Amount"
-          placeholder="800"
-      />
-    </p>
-    <p class="mt-2">
-      <Field 
-          v-model="calorieEntryInput.title"
-          type="text"
-          label="Title"
-          placeholder="Burrito"
-      />
-    </p>
-    <p class="mt-2">
-      <Field 
-          v-model="calorieEntryInput.happenedAt"
-          type="datetime-local"
-          label="Happened At"
-      />
-    </p>
-
-    <p class="mt-6 text-center">
-      <Button type="submit">
-        Save entry
-      </Button>
-    </p>
-  </form>
+  <CalorieEntryForm @saved="createCalorieEntry" class="mt-12">
+    <template v-slot="heading">
+      <h2 class="text-2xl">Add an entry</h2>
+    </template>
+  </CalorieEntryForm>
 
   <form @submit.prevent="saveSettings" class="mt-12">
     <h2 class="text-2xl">Settings</h2>
@@ -64,23 +44,18 @@
   import DatePicker from './components/forms/DatePicker.vue';
   import CalorieEntriesList from './components/CalorieEntriesList.vue';
   import CalorieTotal from './components/CalorieTotal.vue';
+  import CalorieEntryForm from './components/CalorieEntryForm.vue';
   import Field from './components/forms/Field.vue';
   import Button from './components/forms/Button.vue';
   import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/solid';
 
   import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
-  import { toDatetimeLocalValue, getDateStart, getDateEnd } from './lib/date';
+  import { getDateStart, getDateEnd } from './lib/date';
 
   const entriesDate = ref(getDateStart(new Date()));
 
   const calorieEntries: Ref<ICalorieEntry[]> = ref([]);
-
-  const calorieEntryInput = reactive({
-    amount: null,
-    title: null,
-    happenedAt: null,
-  });
 
   function loadPreviousDay() {
     entriesDate.value.setDate(entriesDate.value.getDate() - 1);
@@ -102,23 +77,15 @@
       .sortBy('happenedAt');
   }
 
-  async function createCalorieEntry() {
-    if (!calorieEntryInput.amount || !calorieEntryInput.title) {
-      return;
-    }
-
+  async function createCalorieEntry(data: ICalorieEntry) {
     try {
       db.calorieEntries.add({
-        amount: calorieEntryInput.amount,
-        title: calorieEntryInput.title,
-        happenedAt: new Date(calorieEntryInput.happenedAt ?? toDatetimeLocalValue(new Date()))
+        amount: data.amount,
+        title: data.title,
+        happenedAt: data.happenedAt,
       });
 
       getCalorieEntries();
-
-      calorieEntryInput.amount = null;
-      calorieEntryInput.title = null;
-      calorieEntryInput.happenedAt = null;
     } catch (error) {
       console.log(error);
     }
