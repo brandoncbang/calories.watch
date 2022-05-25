@@ -1,8 +1,5 @@
 <template>
-  <div
-      :class="{ 'text-red-600': limit && totalCalories > limit }"
-      class="mt-6"
-  >
+  <div :class="{ 'text-red-600': limit && totalCalories > limit }">
     <h2 class="text-2xl">Total</h2>
     <p class="mt-2 text-3xl">
       <span>{{ totalCalories }}</span>

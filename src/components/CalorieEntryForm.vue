@@ -1,6 +1,5 @@
 <template>
   <form @submit.prevent="emitSaved">
-    <slot name="heading"></slot>
     <p class="mt-2">
       <Field 
           v-model.number="input.amount"
@@ -24,11 +23,13 @@
           v-model="input.happenedAt"
           type="datetime-local"
           label="Happened At"
-          required
       />
     </p>
 
-    <p class="mt-6 text-center">
+    <p class="flex items-center justify-center mt-6 space-x-2 text-center">
+      <Button @click="$emit('canceled')">
+        Cancel
+      </Button>
       <Button type="submit">
         Save entry
       </Button>
@@ -46,6 +47,7 @@
 
   const emit = defineEmits<{
     (e: 'saved', calorieEntry: ICalorieEntry): void
+    (e: 'canceled'): void
   }>();
 
   const input = reactive({

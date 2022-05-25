@@ -1,43 +1,85 @@
 <template>
-  <div class="flex justify-between text-3xl">
-    <button @click="loadPreviousDay" aria-label="previous day" title="Previous Day">
-      <ArrowLeftIcon class="w-5 h-5" />
-    </button>
+  <div class="mb-24">
+    <template v-if="!screen">
+      <div class="flex justify-between text-3xl">
+        <button @click="loadPreviousDay" aria-label="previous day" title="Previous Day">
+          <ArrowLeftIcon class="w-5 h-5" />
+        </button>
 
-    <DatePicker v-model="entriesDate" />
-    
-    <button @click="loadNextDay" aria-label="next day" title="Next Day">
-      <ArrowRightIcon class="w-5 h-5" />
-    </button>
-  </div>
+        <DatePicker v-model="entriesDate" />
+        
+        <button @click="loadNextDay" aria-label="next day" title="Next Day">
+          <ArrowRightIcon class="w-5 h-5" />
+        </button>
+      </div>
 
-  <h2 class="mt-12 text-2xl">Entries</h2>
-  <CalorieEntriesList
-      @edit-entry="editCalorieEntry"
-      @delete-entry="deleteCalorieEntry"
-      :calorie-entries="calorieEntries"
-  />
-  <CalorieTotal
-      :calorie-entries="calorieEntries"
-      :limit="settings.dailyLimit || null"
-  />
-
-  <CalorieEntryForm @saved="createCalorieEntry" class="mt-12">
-    <template v-slot="heading">
-      <h2 class="text-2xl">Add an entry</h2>
-    </template>
-  </CalorieEntryForm>
-
-  <form @submit.prevent="saveSettings" class="mt-12">
-    <h2 class="text-2xl">Settings</h2>
-    <p class="mt-2">
-      <Field
-          v-model.lazy.number="settings.dailyLimit"
-          type="number"
-          label="Daily Limit"
+      <h2 class="mt-12 text-2xl">Entries</h2>
+      <CalorieEntriesList
+          @edit-entry="editCalorieEntry"
+          @delete-entry="deleteCalorieEntry"
+          :calorie-entries="calorieEntries"
       />
-    </p>
-  </form>
+
+      <div class="flex items-center justify-between mt-6">
+        <CalorieTotal
+            :calorie-entries="calorieEntries"
+            :limit="settings.dailyLimit || null"
+        />
+
+        <Button @click="screen = 'form'">Create entry</Button>
+      </div>      
+    </template>
+
+    <template v-if="screen === 'form'">
+      <h2 class="text-2xl">Add an entry</h2>
+      <CalorieEntryForm @saved="createCalorieEntry" @canceled="screen = null" />
+    </template>
+
+    <template v-if="screen === 'settings'">
+      <form @submit.prevent="saveSettings">
+        <h2 class="text-2xl">Settings</h2>
+        <p class="mt-2">
+          <Field
+              v-model.lazy.number="settings.dailyLimit"
+              type="number"
+              label="Daily Limit"
+          />
+        </p>
+      </form>
+    </template>
+
+    <template v-if="screen === 'about'">
+      <h1 class="text-3xl">About</h1>
+      <p class="mt-2">Made by Brandon Bang</p>
+    </template>
+
+    <div class="fixed bottom-0 left-0 right-0 flex justify-between py-1 mt-12 bg-white border-t-2 px-14 border-slate-800">
+      <button @click="screen = null" class="px-3 py-4">
+        <span
+            :class="{ 'border-b-2': screen === null }"
+            class="border-slate-800"
+        >
+          Entries
+        </span>
+      </button>
+      <button @click="screen = 'settings'" class="px-3 py-4">
+        <span
+            :class="{ 'border-b-2': screen === 'settings' }"
+            class="border-slate-800"
+        >
+          Settings
+        </span>
+      </button>
+      <button @click="screen = 'about'" class="px-3 py-4">
+        <span
+            :class="{ 'border-b-2': screen === 'about' }"
+            class="border-slate-800"
+        >
+          About
+        </span>
+      </button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -52,6 +94,8 @@
   import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
   import { getDateStart, getDateEnd } from './lib/date';
+
+  const screen: Ref<string | null> = ref(null);
 
   const entriesDate = ref(getDateStart(new Date()));
 
@@ -85,6 +129,7 @@
         happenedAt: data.happenedAt,
       });
 
+      screen.value = null;
       getCalorieEntries();
     } catch (error) {
       console.log(error);
