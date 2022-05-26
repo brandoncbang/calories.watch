@@ -110,7 +110,7 @@
   import { db, ICalorieEntry } from './db';
   import { startOfDay, endOfDay, isSameDay } from 'date-fns';
 
-  const screen: Ref<string | null> = ref(null);
+  const screen: Ref<'form' | 'settings' | 'about' | null> = ref(null);
 
   const selectedDate = ref(startOfDay(new Date()));
 
