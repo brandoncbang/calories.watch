@@ -25,11 +25,20 @@
           </td>
           <td class="pl-2 py-1.5">
             <div class="flex text-slate-800">
-              <button @click="$emit('editEntry', entry.id!)">
+              <button
+                  @click="$emit('editEntry', entry.id!)"
+                  aria-label="edit entry"
+                  title="Edit Entry"
+              >
                 <PencilAltIcon class="w-5 h-5" />
               </button>
               
-              <button @click="$emit('deleteEntry', entry.id!)" class="ml-1">
+              <button
+                  @click="$emit('deleteEntry', entry.id!)"
+                  class="ml-1"
+                  aria-label="delete entry"
+                  title="Delete Entry"
+              >
                 <TrashIcon class="w-5 h-5" />
               </button>
             </div>
