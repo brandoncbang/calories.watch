@@ -42,7 +42,14 @@
   import Button from './forms/Button.vue';
 
   import { reactive } from 'vue';
+  import { getDate, getMonth, getYear, set } from 'date-fns';
   import { ICalorieEntry } from '../db';
+
+  interface Props {
+    selectedDate?: Date;
+  }
+
+  const props = defineProps<Props>();
 
   const emit = defineEmits<{
     (e: 'saved', calorieEntry: ICalorieEntry): void
@@ -55,13 +62,23 @@
     happenedAt: null,
   });
 
+  function getDefaultDate(): Date {
+    if (!props.selectedDate) return new Date();
+
+    return set(new Date(), {
+      year: getYear(props.selectedDate),
+      month: getMonth(props.selectedDate),
+      date: getDate(props.selectedDate),
+    });
+  }
+
   function emitSaved() {
     if (!input.amount || !input.title) return;
 
     emit('saved', {
       amount: input.amount,
       title: input.title,
-      happenedAt: input.happenedAt ? new Date(input.happenedAt) : new Date(),
+      happenedAt: input.happenedAt ? new Date(input.happenedAt) : getDefaultDate(),
     });
 
     input.amount = null;

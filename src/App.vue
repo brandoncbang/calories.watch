@@ -39,7 +39,11 @@
 
     <template v-if="screen === 'form'">
       <h2 class="text-2xl">Add a calorie entry</h2>
-      <CalorieEntryForm @saved="createCalorieEntry" @canceled="screen = null" />
+      <CalorieEntryForm
+          @saved="createCalorieEntry"
+          @canceled="screen = null"
+          :selected-date="selectedDate"
+      />
     </template>
 
     <template v-if="screen === 'settings'">
