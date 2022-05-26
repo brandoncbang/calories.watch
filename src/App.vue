@@ -79,8 +79,7 @@
     </template>
 
     <template v-if="screen === 'about'">
-      <h2 class="text-2xl">About</h2>
-      <p class="mt-2">Made by Brandon Bang</p>
+      <About />
     </template>
 
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-800">
@@ -123,6 +122,7 @@
   import Field from './components/forms/Field.vue';
   import Button from './components/forms/Button.vue';
   import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/solid';
+  import About from './components/About.vue';
 
   import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
