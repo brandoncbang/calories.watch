@@ -1,28 +1,35 @@
 <template>
   <div class="mb-24">
     <template v-if="!screen">
-      <div class="flex justify-between text-3xl">
+      <div class="flex justify-between mb-6 text-3xl">
         <button @click="loadPreviousDay" aria-label="previous day" title="Previous Day">
           <ArrowLeftIcon class="w-5 h-5" />
         </button>
 
-        <DatePicker v-model="entriesDate" />
+        <DatePicker v-model="selectedDate" />
         
         <button @click="loadNextDay" aria-label="next day" title="Next Day">
           <ArrowRightIcon class="w-5 h-5" />
         </button>
       </div>
 
+      <CalorieIntakeGraph
+          :calorie-entries="calorieEntries"
+          :start-date="rangeStartDate"
+          :end-date="selectedDate"
+          :limit="settings.dailyLimit || null"
+      />
+
       <h2 class="mt-6 text-2xl">Entries</h2>
       <CalorieEntriesList
           @edit-entry="editCalorieEntry"
           @delete-entry="deleteCalorieEntry"
-          :calorie-entries="calorieEntries"
+          :calorie-entries="calorieEntriesFromSelectedDate"
       />
 
       <div class="flex items-center justify-between mt-6">
         <CalorieTotal
-            :calorie-entries="calorieEntries"
+            :calorie-entries="calorieEntriesFromSelectedDate"
             :limit="settings.dailyLimit || null"
         />
 
@@ -84,6 +91,7 @@
 
 <script setup lang="ts">
   import DatePicker from './components/forms/DatePicker.vue';
+  import CalorieIntakeGraph from './components/CalorieGraph.vue';
   import CalorieEntriesList from './components/CalorieEntriesList.vue';
   import CalorieTotal from './components/CalorieTotal.vue';
   import CalorieEntryForm from './components/CalorieEntryForm.vue';
@@ -93,30 +101,43 @@
 
   import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
-  import { getDateStart, getDateEnd } from './lib/date';
+  import { startOfDay, endOfDay, isSameDay } from 'date-fns';
+
+  // TODO: Remove as many usages of custom date lib as possible (replace with date-fns)
 
   const screen: Ref<string | null> = ref(null);
 
-  const entriesDate = ref(getDateStart(new Date()));
+  const selectedDate = ref(startOfDay(new Date()));
 
-  const calorieEntries: Ref<ICalorieEntry[]> = ref([]);
+  const rangeStartDate = computed(() => {
+    let date = new Date(selectedDate.value);
+    date.setDate(date.getDate() - 7);
+
+    return date;
+  })
 
   function loadPreviousDay() {
-    entriesDate.value.setDate(entriesDate.value.getDate() - 1);
-    entriesDate.value = new Date(entriesDate.value);
+    selectedDate.value.setDate(selectedDate.value.getDate() - 1);
+    selectedDate.value = new Date(selectedDate.value);
   }
 
   function loadNextDay() {
-    entriesDate.value.setDate(entriesDate.value.getDate() + 1);
-    entriesDate.value = new Date(entriesDate.value);
+    selectedDate.value.setDate(selectedDate.value.getDate() + 1);
+    selectedDate.value = new Date(selectedDate.value);
   }
+
+  const calorieEntries: Ref<ICalorieEntry[]> = ref([]);
+
+  const calorieEntriesFromSelectedDate = computed(() => {
+    return calorieEntries.value.filter(entry => isSameDay(selectedDate.value, entry.happenedAt));
+  });
 
   async function getCalorieEntries() {
     calorieEntries.value = await db.calorieEntries
       .where('happenedAt')
       .between(
-        getDateStart(new Date(entriesDate.value)),
-        getDateEnd(new Date(entriesDate.value))
+        startOfDay(rangeStartDate.value),
+        endOfDay(selectedDate.value)
       )
       .sortBy('happenedAt');
   }
