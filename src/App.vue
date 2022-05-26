@@ -1,7 +1,7 @@
 <template>
-  <div class="mb-24">
+  <div>
     <template v-if="!screen">
-      <div class="flex justify-between mb-6 text-3xl">
+      <div class="flex justify-between mb-4 text-3xl">
         <button @click="loadPreviousDay" aria-label="previous day" title="Previous Day">
           <ArrowLeftIcon class="w-5 h-5" />
         </button>
@@ -15,10 +15,28 @@
 
       <CalorieIntakeGraph
           :calorie-entries="calorieEntries"
-          :start-date="rangeStartDate"
+          :start-date="dateRangeStart"
           :end-date="selectedDate"
           :limit="settings.dailyLimit || null"
       />
+      <div class="flex justify-center mt-2 space-x-4">
+        <label>
+          <input type="radio" v-model="dateRangeLengthInDays" value="7" />
+          <span class="ml-1">1W</span>
+        </label>
+        <label>
+          <input type="radio" v-model="dateRangeLengthInDays" value="30" />
+          <span class="ml-1">1M</span>
+        </label>
+        <label>
+          <input type="radio" v-model="dateRangeLengthInDays" value="365" />
+          <span class="ml-1">1Y</span>
+        </label>
+        <label>
+          <input type="radio" v-model="dateRangeLengthInDays" value="1825" />
+          <span class="ml-1">Max</span>
+        </label>
+      </div>
 
       <h2 class="mt-6 text-2xl">Entries</h2>
       <CalorieEntriesList
@@ -108,17 +126,20 @@
 
   import { reactive, ref, Ref, computed, watchEffect, watch } from 'vue';
   import { db, ICalorieEntry } from './db';
-  import { startOfDay, endOfDay, isSameDay } from 'date-fns';
+  import { startOfDay, endOfDay, isSameDay, sub } from 'date-fns';
 
   const screen: Ref<'form' | 'settings' | 'about' | null> = ref(null);
 
   const selectedDate = ref(startOfDay(new Date()));
 
-  const rangeStartDate = computed(() => {
-    let date = new Date(selectedDate.value);
-    date.setDate(date.getDate() - 7);
+  // TODO: Make graph component determine x axis based on range length (show by day, month, etc.)
 
-    return date;
+  const dateRangeLengthInDays = ref<7 | 30 | 365 | 1825>(7);
+
+  const dateRangeStart = computed(() => {
+    return sub(selectedDate.value, {
+      days: dateRangeLengthInDays.value,
+    });
   })
 
   function loadPreviousDay() {
@@ -138,10 +159,15 @@
   });
 
   async function getCalorieEntries() {
+    if (!dateRangeStart.value) {
+      calorieEntries.value = await db.calorieEntries.toCollection().sortBy('happenedAt');
+      return;
+    }
+
     calorieEntries.value = await db.calorieEntries
       .where('happenedAt')
       .between(
-        startOfDay(rangeStartDate.value),
+        startOfDay(dateRangeStart.value),
         endOfDay(selectedDate.value)
       )
       .sortBy('happenedAt');
