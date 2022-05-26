@@ -103,8 +103,6 @@
   import { db, ICalorieEntry } from './db';
   import { startOfDay, endOfDay, isSameDay } from 'date-fns';
 
-  // TODO: Remove as many usages of custom date lib as possible (replace with date-fns)
-
   const screen: Ref<string | null> = ref(null);
 
   const selectedDate = ref(startOfDay(new Date()));

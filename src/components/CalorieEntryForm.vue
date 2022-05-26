@@ -43,7 +43,6 @@
 
   import { reactive } from 'vue';
   import { ICalorieEntry } from '../db';
-  import { toDatetimeLocalValue } from '../lib/date';
 
   const emit = defineEmits<{
     (e: 'saved', calorieEntry: ICalorieEntry): void
@@ -62,7 +61,7 @@
     emit('saved', {
       amount: input.amount,
       title: input.title,
-      happenedAt: new Date(input.happenedAt ?? toDatetimeLocalValue(new Date())),
+      happenedAt: input.happenedAt ? new Date(input.happenedAt) : new Date(),
     });
 
     input.amount = null;
