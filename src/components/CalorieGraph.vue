@@ -6,7 +6,7 @@
   import { ref, computed, onMounted, watch } from 'vue';
   import Chart from 'chart.js/auto';
   import annotationPlugin, { LineAnnotationOptions } from 'chartjs-plugin-annotation';
-  import { eachDayOfInterval, isSameDay } from 'date-fns';
+  import { eachDayOfInterval, format, isSameDay } from 'date-fns';
   import { ICalorieEntry } from '../db';
 
   interface Props {
@@ -55,7 +55,7 @@
 
   function getLabels(): string[] {
     return dailyCalorieTotals.value.map(total => {
-      return `${total.date.getMonth()}/${total.date.getDate()}`
+      return format(total.date, 'M/d');
     });
   }
 
