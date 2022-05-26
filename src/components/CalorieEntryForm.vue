@@ -1,6 +1,7 @@
 <template>
   <form @submit.prevent="emitSaved">
-    <p class="mt-2">
+    <h2 class="text-2xl">{{ entryToEdit ? 'Edit' : 'Create' }} a calorie entry</h2>
+    <p class="mt-4">
       <Field 
           v-model.number="input.amount"
           type="number"

@@ -56,7 +56,6 @@
     </template>
 
     <template v-if="screen === 'form'">
-      <h2 class="text-2xl">Add a calorie entry</h2>
       <CalorieEntryForm
           @saved="createCalorieEntry"
           @canceled="screen = null; calorieEntryToEdit = null"
@@ -68,7 +67,7 @@
     <template v-if="screen === 'settings'">
       <form @submit.prevent="saveSettings">
         <h2 class="text-2xl">Settings</h2>
-        <p class="mt-2">
+        <p class="mt-4">
           <Field
               v-model.lazy.number="settings.dailyLimit"
               type="number"
