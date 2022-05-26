@@ -41,11 +41,12 @@
   import Field from './forms/Field.vue';
   import Button from './forms/Button.vue';
 
-  import { reactive } from 'vue';
-  import { getDate, getMonth, getYear, set } from 'date-fns';
+  import { reactive, watchEffect } from 'vue';
+  import { format, getDate, getMonth, getYear, set } from 'date-fns';
   import { ICalorieEntry } from '../db';
 
   interface Props {
+    entryToEdit?: ICalorieEntry | null;
     selectedDate?: Date;
   }
 
@@ -56,10 +57,30 @@
     (e: 'canceled'): void
   }>();
 
-  const input = reactive({
+  interface ICalorieEntryInput {
+    amount: number | null;
+    title: string | null;
+    happenedAt: string | null;
+  }
+
+  const input = reactive<ICalorieEntryInput>({
     amount: null,
     title: null,
     happenedAt: null,
+  });
+
+  watchEffect(async () => {
+    if (!props.entryToEdit) {
+      input.amount = null;
+      input.title = null;
+      input.happenedAt = null;
+
+      return;
+    }
+
+    input.amount = props.entryToEdit.amount;
+    input.title = props.entryToEdit.title;
+    input.happenedAt = format(props.entryToEdit.happenedAt, 'yyyy-MM-dd\'T\'HH:mm');
   });
 
   function getDefaultDate(): Date {
@@ -75,14 +96,16 @@
   function emitSaved() {
     if (!input.amount || !input.title) return;
 
-    emit('saved', {
+    let emitData: ICalorieEntry = {
       amount: input.amount,
       title: input.title,
       happenedAt: input.happenedAt ? new Date(input.happenedAt) : getDefaultDate(),
-    });
+    }
 
-    input.amount = null;
-    input.title = null;
-    input.happenedAt = null;
+    if (props.entryToEdit) {
+      emitData.id = props.entryToEdit.id;
+    }
+
+    emit('saved', emitData);
   }
 </script>

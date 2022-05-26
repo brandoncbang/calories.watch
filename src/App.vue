@@ -41,7 +41,8 @@
       <h2 class="text-2xl">Add a calorie entry</h2>
       <CalorieEntryForm
           @saved="createCalorieEntry"
-          @canceled="screen = null"
+          @canceled="screen = null; calorieEntryToEdit = null"
+          :entry-to-edit="calorieEntryToEdit"
           :selected-date="selectedDate"
       />
     </template>
@@ -147,6 +148,11 @@
   }
 
   async function createCalorieEntry(data: ICalorieEntry) {
+    if (data.id) {
+      updateCalorieEntry(data);
+      return;
+    }
+
     try {
       db.calorieEntries.add({
         amount: data.amount,
@@ -154,6 +160,35 @@
         happenedAt: data.happenedAt,
       });
 
+      screen.value = null;
+      getCalorieEntries();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const calorieEntryToEdit = ref<ICalorieEntry | null>(null);
+
+  async function editCalorieEntry(id: number) {
+    try {
+      calorieEntryToEdit.value = await db.calorieEntries.get(id) ?? null;
+
+      screen.value = 'form';
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function updateCalorieEntry(data: ICalorieEntry) {
+    try {
+      db.calorieEntries.put({
+        id: data.id,
+        amount: data.amount,
+        title: data.title,
+        happenedAt: data.happenedAt,
+      });
+
+      calorieEntryToEdit.value = null;
       screen.value = null;
       getCalorieEntries();
     } catch (error) {
