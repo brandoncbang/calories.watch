@@ -1,5 +1,7 @@
 <template>
-  <canvas ref="canvasElement" height="200" class="w-full"></canvas>
+  <div class="w-full h-52">
+    <canvas ref="canvasElement"></canvas>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -86,6 +88,7 @@
         ],
       },
       options: {
+        maintainAspectRatio: false,
         scales: {
           y: {
             beginAtZero: true,
