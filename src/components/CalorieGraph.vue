@@ -80,7 +80,7 @@
             borderColor: 'rgb(30, 41, 59)',
             backgroundColor: 'rgb(30, 41, 59)',
             tension: 0,
-            pointRadius: 0,
+            pointRadius: 3,
             spanGaps: false,
           },
         ],
