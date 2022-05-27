@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen max-w-screen-md px-4 py-3 pb-24 mx-auto">
+  <div class="flex flex-col h-screen max-w-screen-md px-4 py-3 mx-auto pb-28">
     <template v-if="!screen">
       <div class="flex flex-col flex-1 max-h-full">
         <div class="flex justify-between mb-4 text-3xl">
