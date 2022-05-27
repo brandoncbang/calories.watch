@@ -1,58 +1,61 @@
 <template>
-  <div>
+  <div class="flex flex-col h-screen max-w-screen-md px-4 py-3 pb-24 mx-auto">
     <template v-if="!screen">
-      <div class="flex justify-between mb-4 text-3xl">
-        <button @click="loadPreviousDay" aria-label="previous day" title="Previous Day">
-          <ArrowLeftIcon class="w-5 h-5" />
-        </button>
+      <div class="flex flex-col flex-1 max-h-full">
+        <div class="flex justify-between mb-4 text-3xl">
+          <button @click="loadPreviousDay" aria-label="previous day" title="Previous Day">
+            <ArrowLeftIcon class="w-5 h-5" />
+          </button>
 
-        <DatePicker v-model="selectedDate" />
-        
-        <button @click="loadNextDay" aria-label="next day" title="Next Day">
-          <ArrowRightIcon class="w-5 h-5" />
-        </button>
-      </div>
+          <DatePicker v-model="selectedDate" />
+          
+          <button @click="loadNextDay" aria-label="next day" title="Next Day">
+            <ArrowRightIcon class="w-5 h-5" />
+          </button>
+        </div>
 
-      <CalorieIntakeGraph
-          :calorie-entries="calorieEntries"
-          :start-date="dateRangeStart"
-          :end-date="selectedDate"
-          :limit="settings.dailyLimit || null"
-      />
-      <div class="flex justify-center mt-2 space-x-4">
-        <label>
-          <input type="radio" v-model="dateRangeLengthInDays" value="7" />
-          <span class="ml-1">1W</span>
-        </label>
-        <label>
-          <input type="radio" v-model="dateRangeLengthInDays" value="30" />
-          <span class="ml-1">1M</span>
-        </label>
-        <label>
-          <input type="radio" v-model="dateRangeLengthInDays" value="365" />
-          <span class="ml-1">1Y</span>
-        </label>
-        <label>
-          <input type="radio" v-model="dateRangeLengthInDays" value="1825" />
-          <span class="ml-1">Max</span>
-        </label>
-      </div>
-
-      <h2 class="mt-6 text-2xl">Entries</h2>
-      <CalorieEntriesList
-          @edit-entry="editCalorieEntry"
-          @delete-entry="deleteCalorieEntry"
-          :calorie-entries="calorieEntriesFromSelectedDate"
-      />
-
-      <div class="flex items-center justify-between mt-6">
-        <CalorieTotal
-            :calorie-entries="calorieEntriesFromSelectedDate"
+        <CalorieIntakeGraph
+            :calorie-entries="calorieEntries"
+            :start-date="dateRangeStart"
+            :end-date="selectedDate"
             :limit="settings.dailyLimit || null"
         />
+        <div class="flex justify-center mt-2 space-x-4 text-sm">
+          <label>
+            <input type="radio" v-model="dateRangeLengthInDays" value="7" />
+            <span class="ml-1">1W</span>
+          </label>
+          <label>
+            <input type="radio" v-model="dateRangeLengthInDays" value="30" />
+            <span class="ml-1">1M</span>
+          </label>
+          <label>
+            <input type="radio" v-model="dateRangeLengthInDays" value="365" />
+            <span class="ml-1">1Y</span>
+          </label>
+          <label>
+            <input type="radio" v-model="dateRangeLengthInDays" value="1825" />
+            <span class="ml-1">Max</span>
+          </label>
+        </div>
 
-        <Button @click="screen = 'form'">Create entry</Button>
-      </div>      
+        <h2 class="mt-6 text-2xl">Entries</h2>
+        <CalorieEntriesList
+            class="flex-grow"
+            @edit-entry="editCalorieEntry"
+            @delete-entry="deleteCalorieEntry"
+            :calorie-entries="calorieEntriesFromSelectedDate"
+        />
+
+        <div class="flex items-center justify-between mt-6">
+          <CalorieTotal
+              :calorie-entries="calorieEntriesFromSelectedDate"
+              :limit="settings.dailyLimit || null"
+          />
+
+          <Button @click="screen = 'form'">Create entry</Button>
+        </div> 
+      </div>     
     </template>
 
     <template v-if="screen === 'form'">

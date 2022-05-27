@@ -1,5 +1,5 @@
 <template>
-  <div v-if="calorieEntries.length" class="mt-2 overflow-y-auto h-72">
+  <div v-if="calorieEntries.length" class="mt-2 overflow-y-auto">
     <table class="w-full text-base">
       <thead class="sticky top-0 pb-2 text-right bg-white after:absolute after:-bottom-px after:left-0 after:block after:w-full after:h-[2px] after:bg-slate-800">
         <tr>
@@ -47,7 +47,7 @@
       </tbody>
     </table>
   </div>
-  <div v-else class="flex items-center justify-center px-4 py-2 mt-2 h-72">
+  <div v-else class="flex items-center justify-center px-4 py-2 mt-2">
     <p>No entries for this date!</p>
   </div>
 </template>
