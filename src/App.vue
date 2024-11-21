@@ -14,7 +14,12 @@
           <div class="mx-auto max-w-3xl py-4">
             <nav class="flex justify-evenly items-center space-x-2">
               <RouterLink class="text-xl px-3 py-4" to="/">Home</RouterLink>
-              <RouterLink class="text-xl px-3 py-4" to="/about">About</RouterLink>
+              <RouterLink class="text-xl px-3 py-4" to="/settings"
+                >Settings</RouterLink
+              >
+              <RouterLink class="text-xl px-3 py-4" to="/about"
+                >About</RouterLink
+              >
             </nav>
           </div>
         </div>
