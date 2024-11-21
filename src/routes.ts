@@ -16,8 +16,6 @@ function validDateParam(name: string) {
     const params =
       typeof to.params[name] === "string" ? [to.params[name]] : to.params[name];
 
-    console.log(params);
-
     for (const date of params) {
       if (!isValid(parseDate(date))) {
         return false;
