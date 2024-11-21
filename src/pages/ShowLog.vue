@@ -115,8 +115,6 @@ watchEffect(() => {
     <h2 class="mt-6 text-2xl">Entries</h2>
     <CalorieEntriesList
       class="flex-grow"
-      @edit-entry="editCalorieEntry"
-      @delete-entry="deleteCalorieEntry"
       :calorie-entries="calorieEntriesFromSelectedDate"
     />
 
