@@ -9,19 +9,19 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue';
-  import { ICalorieEntry } from '../db';
+import { computed } from "vue";
+import { ICalorieEntry } from "../helpers/db";
 
-  interface Props {
-    calorieEntries: ICalorieEntry[];
-    limit?: number;
-  }
+interface Props {
+  calorieEntries: ICalorieEntry[];
+  limit?: number | null;
+}
 
-  const props = withDefaults(defineProps<Props>(), {
-    calorieEntries: () => [],
-  });
+const props = withDefaults(defineProps<Props>(), {
+  calorieEntries: () => [],
+});
 
-  const totalCalories = computed(() => {
-    return props.calorieEntries.reduce((sum, entry) => sum + entry.amount, 0);
-  });
+const totalCalories = computed(() => {
+  return props.calorieEntries.reduce((sum, entry) => sum + entry.amount, 0);
+});
 </script>
