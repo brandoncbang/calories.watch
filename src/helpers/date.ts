@@ -1,4 +1,4 @@
-import { format, isSameDay, isValid, parse } from "date-fns";
+import { format, isSameDay, parse } from "date-fns";
 
 const dateFormat = "MM-dd-yyyy";
 
