@@ -55,7 +55,7 @@
 <script setup lang="ts">
   import { PencilAltIcon, TrashIcon } from '@heroicons/vue/solid';
 
-  import { ICalorieEntry } from '../db';
+import { ICalorieEntry } from "../helpers/db";
 
   interface Props {
     calorieEntries: ICalorieEntry[];

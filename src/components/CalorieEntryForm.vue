@@ -42,9 +42,9 @@
   import Field from './forms/Field.vue';
   import Button from './forms/Button.vue';
 
-  import { reactive, watchEffect } from 'vue';
-  import { format, getDate, getMonth, getYear, set } from 'date-fns';
-  import { ICalorieEntry } from '../db';
+import { reactive, watchEffect } from "vue";
+import { format, getDate, getMonth, getYear, set } from "date-fns";
+import { ICalorieEntry } from "../helpers/db";
 
   interface Props {
     entryToEdit?: ICalorieEntry | null;
