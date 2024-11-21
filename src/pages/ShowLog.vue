@@ -124,7 +124,9 @@ watchEffect(() => {
         :limit="settings.dailyLimit"
       />
 
-      <Button @click="screen = 'form'">Create entry</Button>
+      <RouterLink :to="`/log/${formatDate(selectedDate)}/entries/create`">
+        Create entry
+      </RouterLink>
     </div>
   </div>
 </template>
