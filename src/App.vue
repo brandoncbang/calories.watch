@@ -8,7 +8,7 @@
       </div>
     </main>
 
-    <footer class="sticky bottom-0 border-t border-slate-900 bg-white">
+    <footer class="sticky bottom-0 border-t-2 border-slate-900 bg-white">
       <div class="px-6">
         <div class="mx-auto max-w-3xl">
           <div class="mx-auto max-w-3xl py-4">
