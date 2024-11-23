@@ -124,8 +124,26 @@ watchEffect(() => {
         :limit="settings.dailyLimit"
       />
 
-      <RouterLink :to="`/log/${formatDate(selectedDate)}/entries/create`">
-        Create entry
+      <RouterLink
+        class="flex items-center px-3 py-4 border-2 border-slate-900"
+        :to="`/log/${formatDate(selectedDate)}/entries/create`"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"
+          />
+        </svg>
+
+        <span class="ml-1.5">Create entry</span>
       </RouterLink>
     </div>
   </div>
